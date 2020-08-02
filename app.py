@@ -47,13 +47,12 @@ def handle_message(event):
 
         result = main()
 
-        for r in result["data"]:
-            line_bot_api.reply_message(
-                event.reply_token,
-                TextSendMessage(
-                    "{}¥n{}¥n{}¥n".format(r["name"], r["addr"], " ".join(r["info"]))
-                ),
-            )
+        messages = ["{}\n{}\n{}\n".format(r["name"], r["addr"], " ".join(r["info"]))
+                    for r in result["data"]]
+        line_bot_api.reply_message(
+            event.reply_token,
+            TextSendMessage(messages)
+        )
 
 
 class KappaController(object):
