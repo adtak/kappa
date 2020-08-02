@@ -11,6 +11,7 @@ flask = "*"
 line-bot-sdk = "*"
 beautifulsoup4 = "*"
 requests = "*"
+gunicorn = "*"
 
 [requires]
 python_version = "3.7"
