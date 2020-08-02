@@ -47,11 +47,21 @@ def handle_message(event):
 
         result = main()
 
-        messages = ["{}\n{}\n{}\n".format(r["name"], r["addr"], " ".join(r["info"]))
-                    for r in result["data"]]
+        messages = []
+        for r in result["data"]:
+            messages.append(
+                TextSendMessage(
+                    "{}\n{}\n{}\n".format(
+                        r["name"],
+                        r["addr"],
+                        " ".join(r["info"])
+                    )
+                )
+            )
+
         line_bot_api.reply_message(
             event.reply_token,
-            TextSendMessage(messages)
+            messages
         )
 
 
