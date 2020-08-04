@@ -16,8 +16,9 @@ line_bot_api = LineBotApi(channel_access_token)
 def main():
     result = start()
 
-    for m in msg.create_message(result["data"]):
-        line_bot_api.push_message(user_id, messages=TextSendMessage(text=m))
+    line_bot_api.push_message(
+        user_id,
+        messages=[TextSendMessage(m) for m in msg.create_message(result["data"])])
 
 
 def start():

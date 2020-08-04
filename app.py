@@ -50,7 +50,7 @@ def handle_message(event):
 
         line_bot_api.reply_message(
             event.reply_token,
-            [TextSendMessage(m) for m in msg.create_message(result["data"])]
+            messages=[TextSendMessage(m) for m in msg.create_message(result["data"])]
         )
 
     elif client_message == "ID教えて":
