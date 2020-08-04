@@ -50,10 +50,11 @@ def handle_message(event):
         for r in result["data"]:
             messages.append(
                 TextSendMessage(
-                    "{}\n{}\n{}\n".format(
+                    "{}\n{}\n{}\n{}".format(
                         r["name"],
                         r["addr"],
-                        r["info"]
+                        r["info"],
+                        r["link"]
                     )
                 )
             )
