@@ -10,6 +10,8 @@ from linebot.exceptions import InvalidSignatureError
 from linebot.models import MessageEvent, TextMessage, TextSendMessage
 
 from src.parser import Parser
+import src.message_creater as msg
+
 
 # make instance
 app = Flask(__name__)
@@ -46,22 +48,9 @@ def handle_message(event):
 
         result = start()
 
-        messages = []
-        for r in result["data"]:
-            messages.append(
-                TextSendMessage(
-                    "{}\n{}\n{}\n{}".format(
-                        r["name"],
-                        r["addr"],
-                        r["info"],
-                        r["link"]
-                    )
-                )
-            )
-
         line_bot_api.reply_message(
             event.reply_token,
-            messages
+            [TextSendMessage(m) for m in msg.create_message(result["data"])]
         )
 
     elif client_message == "ID教えて":
