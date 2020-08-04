@@ -67,8 +67,8 @@ def handle_message(event):
 
 def start():
     url_fqdn = "https://s.shamaison.com"
-    url_path = "/search/list"
-    + "?PRF=11&RIL=P119012&SSTA=22048&ESTA=22048&MD=2&CFR=&CTO=&SFR=40&STO=&KD=S10"
+    url_path = "/search/list" \
+               "?PRF=11&RIL=P119012&SSTA=22048&ESTA=22048&MD=2&CFR=&CTO=&SFR=40&STO=&KD=S10"
 
     result = requests.get(url_fqdn + url_path)
     parser = Parser(url_fqdn, result.content)
