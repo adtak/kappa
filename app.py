@@ -64,6 +64,13 @@ def handle_message(event):
             messages
         )
 
+    elif client_message == "ID教えて":
+        profile = line_bot_api.get_profile(event.source.user_id)
+        line_bot_api.reply_message(
+            event.reply_token,
+            TextSendMessage(f"Your user ID is {profile.user_id}.")
+        )
+
 
 def start():
     url_fqdn = "https://s.shamaison.com"
