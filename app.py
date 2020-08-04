@@ -1,8 +1,5 @@
-import requests
 import os
-
-# Python Scraping library
-from bs4 import BeautifulSoup
+import requests
 
 # Python Web framework
 from flask import Flask, request, abort
@@ -11,6 +8,8 @@ from flask import Flask, request, abort
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
 from linebot.models import MessageEvent, TextMessage, TextSendMessage
+
+from src.parser import Parser
 
 # make instance
 app = Flask(__name__)
@@ -45,7 +44,7 @@ def handle_message(event):
     client_message = event.message.text
     if client_message == "検索":
 
-        result = main()
+        result = start()
 
         messages = []
         for r in result["data"]:
@@ -54,7 +53,7 @@ def handle_message(event):
                     "{}\n{}\n{}\n".format(
                         r["name"],
                         r["addr"],
-                        " ".join(r["info"])
+                        r["info"]
                     )
                 )
             )
@@ -65,44 +64,15 @@ def handle_message(event):
         )
 
 
-class KappaController(object):
-    def __init__(self, url):
-        super().__init__()
-        self.url = url
-
-    def get_data(self):
-        output = {"data": []}
-        result = requests.get(self.url)
-        soup = BeautifulSoup(result.content, "html.parser")
-
-        apartment_blocks = soup.find_all("a", class_="imgBox001")
-        for apartment_block in apartment_blocks:
-            name_block = apartment_block.find("h2")
-            info_block = apartment_block.find("section", class_="clear")
-
-            info_list = []
-            addr = info_block.find("div").contents[0]
-            for info in info_block.find("p", class_="textRight").find_all("span"):
-                if "\n" == info.get_text():
-                    continue
-                else:
-                    info_list.append(info.get_text())
-
-            output["data"].append(
-                {"name": name_block.contents[-1], "addr": addr, "info": info_list}
-            )
-
-        return output
-
-
-def main():
-    print("start kappa!!")
+def start():
     url = (
         "https://s.shamaison.com/search/list"
         + "?PRF=11&RIL=P119012&SSTA=22048&ESTA=22048&MD=2&CFR=&CTO=&SFR=40&STO=&KD=S10"
     )
-    controller = KappaController(url)
-    return controller.get_data()
+    result = requests.get(url)
+    parser = Parser(result.content)
+
+    return parser.parse_all()
 
 
 if __name__ == "__main__":

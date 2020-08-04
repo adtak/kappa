@@ -5,6 +5,8 @@ verify_ssl = true
 
 [dev-packages]
 flake8 = "*"
+unknown = {editable = true,path = "."}
+kappa = {editable = true,path = "."}
 
 [packages]
 flask = "*"
