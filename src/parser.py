@@ -1,4 +1,3 @@
-import requests
 # Python Scraping library
 from bs4 import BeautifulSoup
 
@@ -40,13 +39,3 @@ class Parser(object):
 
     def parse_link(self, html):
         return html.get_attribute_list("href")[0]
-
-
-if __name__ == "__main__":
-    url_fqdn = "https://s.shamaison.com"
-    url_path = "/search/list" \
-               "?PRF=11&RIL=P119012&SSTA=22048&ESTA=22048&MD=2&CFR=&CTO=&SFR=40&STO=&KD=S10"
-
-    result = requests.get(url_fqdn + url_path)
-    parser = Parser(url_fqdn, result.content)
-    print(parser.parse_all())
