@@ -1,5 +1,4 @@
 import os
-import requests
 
 # Python Web framework
 from flask import Flask, request, abort
@@ -9,8 +8,7 @@ from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
 from linebot.models import MessageEvent, TextMessage, TextSendMessage
 
-from src.parser import Parser
-import src.message_creater as msg
+from src.controller import Controller
 
 
 # make instance
@@ -46,11 +44,11 @@ def handle_message(event):
     client_message = event.message.text
     if client_message == "検索":
 
-        result = start()
+        messages = Controller().start()
 
         line_bot_api.reply_message(
             event.reply_token,
-            messages=[TextSendMessage(m) for m in msg.create_message(result["data"])]
+            messages=[TextSendMessage(m) for m in messages]
         )
 
     elif client_message == "ID教えて":
@@ -59,16 +57,6 @@ def handle_message(event):
             event.reply_token,
             TextSendMessage(f"Your user ID is {profile.user_id}.")
         )
-
-
-def start():
-    url_fqdn = os.environ["TARGET_URL_FQDN"]
-    url_path = os.environ["TARGET_URL_PATH"]
-
-    result = requests.get(url_fqdn + url_path)
-    parser = Parser(url_fqdn, result.content)
-
-    return parser.parse_all()
 
 
 if __name__ == "__main__":
