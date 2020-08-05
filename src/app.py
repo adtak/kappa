@@ -51,11 +51,15 @@ def handle_message(event):
             messages=[TextSendMessage(m) for m in messages]
         )
 
-    elif client_message == "ID教えて":
-        profile = line_bot_api.get_profile(event.source.user_id)
+    elif client_message == "show properties":
         line_bot_api.reply_message(
             event.reply_token,
-            TextSendMessage(f"Your user ID is {profile.user_id}.")
+            TextSendMessage(
+                f"TYPE : {event.source.type}\n"
+                f"USER ID : {event.source.userId}\n"
+                f"GROUP ID : {event.source.groupId}\n"
+                f"ROOM ID : {event.source.roomId}\n"
+            )
         )
 
 
