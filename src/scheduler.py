@@ -13,11 +13,13 @@ line_bot_api = LineBotApi(channel_access_token)
 
 def main():
     messages = Controller().start()
+    messages = ["本日の物件情報をお知らせするよ！"] + messages
 
-    line_bot_api.push_message(
-        user_id,
-        messages=[TextSendMessage(m) for m in messages]
-    )
+    for m in messages:
+        line_bot_api.push_message(
+            user_id,
+            messages=TextSendMessage(m)
+        )
 
 
 if __name__ == "__main__":
