@@ -45,6 +45,8 @@ def handle_message(event):
     if client_message == "検索":
 
         messages = Controller().start()
+        if len(messages) > 5:
+            messages = messages[:5]
 
         line_bot_api.reply_message(
             event.reply_token,
