@@ -52,14 +52,26 @@ def handle_message(event):
         )
 
     elif client_message == "show properties":
+        _type = event.source.type
+        msg = f"TYPE : {_type}\n"
+
+        if _type == 'user':
+            msg += f"USER ID : {event.source.user_id}"
+
+        elif _type == 'group':
+            msg += f"GROUP ID : {event.source.group_id}\n"
+            msg += f"USER ID : {event.source.user_id}"
+
+        elif _type == 'room':
+            msg += f"ROOM ID : {event.source.room_id}\n"
+            msg += f"USER ID : {event.source.user_id}"
+
+        else:
+            msg += "UNKNOWN TYPE"
+
         line_bot_api.reply_message(
             event.reply_token,
-            TextSendMessage(
-                f"TYPE : {event.source.type}\n"
-                f"USER ID : {event.source.userId}\n"
-                f"GROUP ID : {event.source.groupId}\n"
-                f"ROOM ID : {event.source.roomId}\n"
-            )
+            TextSendMessage(msg)
         )
 
 
