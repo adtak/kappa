@@ -8,8 +8,6 @@ from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
 from linebot.models import MessageEvent, TextMessage, TextSendMessage
 
-from src.controller import Controller
-
 
 # make instance
 app = Flask(__name__)
@@ -44,13 +42,12 @@ def handle_message(event):
     client_message = event.message.text
     if client_message == "検索":
 
-        messages = Controller().start()
-        if len(messages) > 5:
-            messages = messages[:5]
+        url_fqdn = os.environ["TARGET_URL_FQDN"]
+        url_path = os.environ["TARGET_URL_PATH"]
 
         line_bot_api.reply_message(
             event.reply_token,
-            messages=[TextSendMessage(m) for m in messages]
+            messages=TextSendMessage(url_fqdn + url_path)
         )
 
     elif client_message == "show properties":
