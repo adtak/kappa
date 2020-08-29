@@ -7,7 +7,6 @@ from linebot.models import TextSendMessage
 from src.controller import Controller
 
 channel_access_token = os.environ["LINE_CHANNEL_ACCESS_TOKEN"]
-user_id = os.environ["LINE_PUSH_RECEIVER_ID"]
 line_bot_api = LineBotApi(channel_access_token)
 
 
@@ -16,20 +15,19 @@ def main():
 
     controller.start()
 
-    result = controller.result
+    results = controller.results
 
-    if len(result) > 0:
-        messages = ["本日の新着物件をお知らせするよ！"] + result
-    else:
-        messages = ["本日の新着物件はないよ！"]
+    for receiver, messages in results.items():
+        if len(messages) > 0:
+            messages = ["本日の新着物件をお知らせするよ！"] + messages
+        else:
+            messages = ["本日の新着物件はないよ！"]
 
-    for m in messages:
-        line_bot_api.push_message(
-            user_id,
-            messages=TextSendMessage(m)
-        )
-
-    controller.final()
+        for m in messages:
+            line_bot_api.push_message(
+                receiver,
+                messages=TextSendMessage(m)
+            )
 
 
 if __name__ == "__main__":

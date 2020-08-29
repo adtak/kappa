@@ -34,8 +34,31 @@ class Room(Base):
     rent = Column(Float)
     link_url = Column(String)
     is_vacancy = Column(Boolean, server_default="t")
+    is_vacancy_before = Column(Boolean, server_default="t")
     is_notify = Column(Boolean, server_default="t")
     apartment = relationship("Apartment")
+    created_at = Column(DateTime, nullable=False, server_default=func.now())
+    updated_at = Column(DateTime, nullable=False, server_default=func.now(), server_onupdate=func.now())  # noqa E501
+
+
+class Receiver(Base):
+    __tablename__ = "receivers"
+
+    id = Column(Integer, primary_key=True)
+    receiver = Column(String, nullable=False)
+    search_url = Column(String)
+    created_at = Column(DateTime, nullable=False, server_default=func.now())
+    updated_at = Column(DateTime, nullable=False, server_default=func.now(), server_onupdate=func.now())  # noqa E501
+
+
+class Notification(Base):
+    __tablename__ = "notifications"
+
+    id = Column(Integer, primary_key=True)
+    receiver_id = Column(Integer, ForeignKey("receivers.id"), nullable=False)
+    room_id = Column(Integer, ForeignKey("rooms.id"), nullable=False)
+    receiver = relationship("Receiver")
+    room = relationship("Room")
     created_at = Column(DateTime, nullable=False, server_default=func.now())
     updated_at = Column(DateTime, nullable=False, server_default=func.now(), server_onupdate=func.now())  # noqa E501
 
