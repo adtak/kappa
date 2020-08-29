@@ -12,12 +12,24 @@ line_bot_api = LineBotApi(channel_access_token)
 
 
 def main():
-    messages = Controller().start()
+    controller = Controller()
 
-    line_bot_api.push_message(
-        user_id,
-        messages=[TextSendMessage(m) for m in messages]
-    )
+    controller.start()
+
+    result = controller.result
+
+    if len(result) > 0:
+        messages = ["本日の新着物件をお知らせするよ！"] + result
+    else:
+        messages = ["本日の新着物件はないよ！"]
+
+    for m in messages:
+        line_bot_api.push_message(
+            user_id,
+            messages=TextSendMessage(m)
+        )
+
+    controller.final()
 
 
 if __name__ == "__main__":

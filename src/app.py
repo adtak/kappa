@@ -8,8 +8,6 @@ from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
 from linebot.models import MessageEvent, TextMessage, TextSendMessage
 
-from src.controller import Controller
-
 
 # make instance
 app = Flask(__name__)
@@ -44,18 +42,35 @@ def handle_message(event):
     client_message = event.message.text
     if client_message == "検索":
 
-        messages = Controller().start()
+        url_fqdn = os.environ["TARGET_URL_FQDN"]
+        url_path = os.environ["TARGET_URL_PATH"]
 
         line_bot_api.reply_message(
             event.reply_token,
-            messages=[TextSendMessage(m) for m in messages]
+            messages=TextSendMessage(url_fqdn + url_path)
         )
 
-    elif client_message == "ID教えて":
-        profile = line_bot_api.get_profile(event.source.user_id)
+    elif client_message == "show properties":
+        _type = event.source.type
+        msg = f"TYPE : {_type}\n"
+
+        if _type == 'user':
+            msg += f"USER ID : {event.source.user_id}"
+
+        elif _type == 'group':
+            msg += f"GROUP ID : {event.source.group_id}\n"
+            msg += f"USER ID : {event.source.user_id}"
+
+        elif _type == 'room':
+            msg += f"ROOM ID : {event.source.room_id}\n"
+            msg += f"USER ID : {event.source.user_id}"
+
+        else:
+            msg += "UNKNOWN TYPE"
+
         line_bot_api.reply_message(
             event.reply_token,
-            TextSendMessage(f"Your user ID is {profile.user_id}.")
+            TextSendMessage(msg)
         )
 
 
