@@ -87,7 +87,7 @@ def handle_message(event):
 
         line_bot_api.reply_message(
             event.reply_token,
-            TextSendMessage(f"検索条件を¥n {url_fqdn}{receiver.search_url}¥n に更新したよ！")
+            TextSendMessage(f"検索条件を {url_fqdn}{receiver.search_url} に更新したよ！")
         )
 
 
