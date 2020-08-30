@@ -85,6 +85,11 @@ def handle_message(event):
         receiver.search_url = url.replace(url_fqdn, "")
         session.commit()
 
+        line_bot_api.reply_message(
+            event.reply_token,
+            TextSendMessage(f"検索条件を{url_fqdn}{receiver.search_url}に更新したよ！")
+        )
+
 
 def is_register_url(client_message: str):
     pattern = "登録.*https://.*"
