@@ -47,6 +47,7 @@ def handle_message(event):
     receiver = session.query(Receiver).one()
 
     client_message = event.message.text
+    print(client_message)
     url_fqdn = os.environ["TARGET_URL_FQDN"]
     url_path = receiver.search_url
 
