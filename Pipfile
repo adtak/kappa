@@ -21,3 +21,7 @@ alembic = "*"
 
 [requires]
 python_version = "3.7"
+
+[scripts]
+pre-migrate = "alembic revision --autogenerate -m"
+migrate = "alembic upgrade head"
