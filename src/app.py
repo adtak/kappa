@@ -1,4 +1,5 @@
 import os
+import re
 
 # Python Web framework
 from flask import Flask, request, abort
@@ -7,6 +8,9 @@ from flask import Flask, request, abort
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
 from linebot.models import MessageEvent, TextMessage, TextSendMessage
+
+from src.db.connection import DataBaseConnection
+from src.db.models import Receiver
 
 
 # make instance
@@ -39,18 +43,20 @@ def callback():
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
+    session = DataBaseConnection().session
+    receiver = session.query(Receiver).one()
+
     client_message = event.message.text
+    url_fqdn = os.environ["TARGET_URL_FQDN"]
+    url_path = receiver.search_url
+
     if client_message == "検索":
-
-        url_fqdn = os.environ["TARGET_URL_FQDN"]
-        url_path = os.environ["TARGET_URL_PATH"]
-
         line_bot_api.reply_message(
             event.reply_token,
             messages=TextSendMessage(url_fqdn + url_path)
         )
 
-    elif client_message == "show properties":
+    elif client_message == "情報":
         _type = event.source.type
         msg = f"TYPE : {_type}\n"
 
@@ -72,6 +78,17 @@ def handle_message(event):
             event.reply_token,
             TextSendMessage(msg)
         )
+
+    elif is_register_url(client_message):
+        pattern = "(https://)"
+        url = "".join(re.split(pattern, client_message)[-2:])
+        receiver.search_url = url.replace(url_fqdn, "")
+        session.commit()
+
+
+def is_register_url(client_message: str):
+    pattern = "登録.*https://.*"
+    return bool(re.match(pattern, client_message))
 
 
 if __name__ == "__main__":

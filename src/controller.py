@@ -4,16 +4,17 @@ import requests
 from typing import List
 
 from src.db.connection import DataBaseConnection
-from src.db.models import Apartment, Room
+from src.db.models import Apartment, Room, Receiver
 from src.parser import ParseResult, Parser
 import src.message_creater as msg
 
 
 class Controller(object):
     def __init__(self) -> None:
-        self.url_fqdn = os.environ["TARGET_URL_FQDN"]
-        self.url_path = os.environ["TARGET_URL_PATH"]
         self.session = DataBaseConnection().session
+        self.receiver = self.session.query(Receiver).one()
+        self.url_fqdn = os.environ["TARGET_URL_FQDN"]
+        self.url_path = self.receiver.search_url
         self.result = None
 
     def start(self):
@@ -88,6 +89,9 @@ class Controller(object):
 
     def select_notification(self):
         return self.session.query(Room).filter(Room.is_notify.is_(True)).all()
+
+    def get_user_id(self):
+        return self.receiver.user_id
 
 
 if __name__ == "__main__":
