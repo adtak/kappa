@@ -47,8 +47,6 @@ def handle_message(event):
     receiver = session.query(Receiver).one()
 
     client_message = event.message.text
-    print(type(client_message))
-    print(client_message)
     url_fqdn = os.environ["TARGET_URL_FQDN"]
     url_path = receiver.search_url
 
@@ -81,7 +79,7 @@ def handle_message(event):
             TextSendMessage(msg)
         )
 
-    elif is_register_url(client_message):
+    elif client_message.startswith("登録"):
         pattern = "(https://)"
         url = "".join(re.split(pattern, client_message)[-2:])
         receiver.search_url = url.replace(url_fqdn, "")
@@ -91,11 +89,6 @@ def handle_message(event):
             event.reply_token,
             TextSendMessage(f"検索条件を{url_fqdn}{receiver.search_url}に更新したよ！")
         )
-
-
-def is_register_url(client_message: str):
-    pattern = "登録.*https://.*"
-    return bool(re.match(pattern, client_message))
 
 
 if __name__ == "__main__":
