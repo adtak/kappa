@@ -40,6 +40,16 @@ class Room(Base):
     updated_at = Column(DateTime, nullable=False, server_default=func.now(), server_onupdate=func.now())  # noqa E501
 
 
+class Receiver(Base):
+    __tablename__ = "receivers"
+
+    id = Column(Integer, primary_key=True)
+    user_id = Column(String, nullable=False)
+    search_url = Column(String)
+    created_at = Column(DateTime, nullable=False, server_default=func.now())
+    updated_at = Column(DateTime, nullable=False, server_default=func.now(), server_onupdate=func.now())  # noqa E501
+
+
 def main():
     Base.metadata.create_all(DataBaseConnection().engine)
 
